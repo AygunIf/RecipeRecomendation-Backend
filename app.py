@@ -1,17 +1,17 @@
 from flask import Flask
 from model import User, db
 
+from utils import *
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:food24@localhost:5432/fooddb'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:password@localhost/mydatabase'
+
+#Dev Connection:
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@localhost:5432/fooddb'
 
 db.init_app(app)
 
-#with app.app_context():
-#   db.create_all()
-
-
 @app.route("/")
+@require_api_key
 def hello_world():
     return "<p>Hello, World!</p>"
 
