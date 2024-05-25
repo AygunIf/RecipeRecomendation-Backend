@@ -9,13 +9,19 @@ db = SQLAlchemy()
 
 class User(db.Model):
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     connection_token = db.Column(db.String(12))
 
     def create_connection_token(self):
         characters = string.ascii_uppercase + string.digits 
         token = ''.join(random.choice(characters) for _ in range(10))  
         self.connection_token = token
+    
+    def to_dict(self):
+        return {
+            'id':self.id,
+            'connection_token': self.connection_token
+            }
 
 
 class Recipe(db.Model):
@@ -34,7 +40,7 @@ class Recipe(db.Model):
     recipe_servings = db.Column(db.Float)
     calories = db.Column(db.Float) #Kcal
     rating = db.Column(db.Integer)#-> From 1-5
-    recipe_category = db.Column(db.Integer) #-> String
+    recipe_category = db.Column(db.String(150)) #-> String
     source = db.Column(db.String(20))
     
 
