@@ -6,11 +6,16 @@ import string
 
 db = SQLAlchemy()
 
+user_answers_table = db.Table('user_answers',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('answer_id', db.Integer, db.ForeignKey('answers.answer_id'), primary_key=True)
+)
 
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     connection_token = db.Column(db.String(12))
+    answers = db.relationship('Answers', secondary=user_answers_table, backref=db.backref('users', lazy='dynamic'))
 
     def create_connection_token(self):
         characters = string.ascii_uppercase + string.digits 
@@ -22,6 +27,21 @@ class User(db.Model):
             'id':self.id,
             'connection_token': self.connection_token
             }
+
+class Answers(db.Model):
+    __tablename__ = 'answers'
+    answer_id = db.Column(db.Integer, primary_key = True, autoincrement=True)
+    question = db.Column(db.String(50))
+    alt_letter = db.Column(db.String(1))
+    alternative = db.Column(db.String(25))
+
+    def to_dict(self):
+        return {
+            'answer_id':self.answer_id,
+            'question': self.question,
+            'alt_letter': self.alt_letter,
+            'alternative': self.alternative
+         }
 
 
 class Recipe(db.Model):

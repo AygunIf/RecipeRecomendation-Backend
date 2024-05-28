@@ -1,8 +1,8 @@
 from flask import Flask
 from model import User, db
 
-from services.recipe_service import get_all_recipes, get_recipe_by_id
-from services.user_service import get_user_by_token, create_new_connection
+from services.recipe_service import *
+from services.user_service import *
 
 from utils import *
 
@@ -52,6 +52,12 @@ def api_create_new_connection():
     res,status = create_new_connection()
     return jsonify(res), status
 
+
+@app.post('/users/<string:token>/saveAnswer/<int:answer_id>')
+@require_api_key
+def api_save_user_answer(token, answer_id):
+    res,status = add_user_answer(token,answer_id)
+    return jsonify(res),status
 
 
 
