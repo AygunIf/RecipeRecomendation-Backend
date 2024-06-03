@@ -9,7 +9,7 @@ from utils import *
 app = Flask(__name__)
 
 #Dev Connection:
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@localhost:5432/fooddb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1023@localhost:5432/fooddb'
 
 db.init_app(app)
 
@@ -58,6 +58,26 @@ def api_create_new_connection():
 def api_save_user_answer(token, answer_id):
     res,status = add_user_answer(token,answer_id)
     return jsonify(res),status
+
+@app.post('/users/<string:token>/save-answers')
+@require_api_key
+def api_save_user_answers(token):
+    
+    data = request.get_json()
+    if len(data)<15:
+        return {'message': 'No complete data provided'}, 201
+    
+    for d in data:
+        answer_id = d['answerId']
+        res,status = add_user_answer(token,answer_id)
+
+    return jsonify(res), status
+
+@app.put('/users/<string:token>/calculate-dosha')
+@require_api_key
+def api_calculate_dosha(token):
+    res,status = calculate_user_dosha_type(token)
+    return jsonify(res), status
 
 
 

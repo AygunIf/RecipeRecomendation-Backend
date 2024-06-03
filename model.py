@@ -15,6 +15,7 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     connection_token = db.Column(db.String(12))
+    dosha_type = db.Column(db.String(20), default = None)
     answers = db.relationship('Answers', secondary=user_answers_table, backref=db.backref('users', lazy='dynamic'))
 
     def create_connection_token(self):

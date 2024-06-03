@@ -39,3 +39,37 @@ def add_user_answer(token, answer_id):
     return {'message': 'Done!'}, 200
 
 
+def calculate_user_dosha_type(token):
+
+    usr = User.query.filter_by(connection_token=token).first()
+
+    if usr is None:
+        return {'message': 'User not found.'}, 404
+    
+    if len(usr.answers)<15:
+        return {'message': 'User dont have answers yet'}, 200
+
+    a_alt = 0
+    b_alt = 0
+    c_alt = 0
+
+    for a in usr.answers:
+        if a.alt_letter == 'a':
+            a_alt+=1
+        if a.alt_letter == 'b':
+            b_alt+=1
+        if a.alt_letter =='c':
+            c_alt+=1
+
+    if a_alt > b_alt and a_alt>c_alt:
+        usr.dosha_type = 'Vata'
+    if b_alt > a_alt and b_alt>c_alt:
+        usr.dosha_type = 'Pitta'
+    if c_alt > a_alt and c_alt>b_alt:
+        usr.dosha_type = 'Kapha'
+
+    db.session.add(usr)
+    db.session.commit()
+
+    return {'message': 'Dosha type calculated', 'dosha_type': usr.dosha_type}, 200
+
