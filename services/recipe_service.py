@@ -1,7 +1,7 @@
 from model import Recipe, db
 
 def get_all_recipes():
-    all_recipes = Recipe.query.all()
+    all_recipes = Recipe.query.limit(20).all()
     recep_list = [recipe.to_dict() for recipe in all_recipes]
     return (recep_list), 200
 

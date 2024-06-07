@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from model import User, db
 
 from services.recipe_service import *
@@ -7,6 +8,7 @@ from services.user_service import *
 from utils import *
 
 app = Flask(__name__)
+CORS(app)
 
 #Dev Connection:
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1023@localhost:5432/fooddb'
@@ -23,11 +25,11 @@ def hello_world():
 ######
 # Recipes
 ######
-#@app.route('/recipes')
-#@require_api_key
-#def api_get_all_recipes():
-#    res, status = get_all_recipes()
-#    return jsonify(res), status
+@app.route('/recipes')
+@require_api_key
+def api_get_all_recipes():
+    res, status = get_all_recipes()
+    return jsonify(res), status
 
 
 @app.route("/recipes/<int:id>")
