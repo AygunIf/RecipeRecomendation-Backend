@@ -4,6 +4,7 @@ from model import User, db
 
 from services.recipe_service import *
 from services.user_service import *
+from flask_migrate import Migrate
 
 from utils import *
 
@@ -11,9 +12,11 @@ app = Flask(__name__)
 CORS(app)
 
 #Dev Connection:
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1023@localhost:5432/fooddb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:0810@localhost:5432/fooddb'
 
 db.init_app(app)
+migrate = Migrate(app, db)
+
 
 @app.route("/")
 @require_api_key
@@ -81,6 +84,19 @@ def api_calculate_dosha(token):
     res,status = calculate_user_dosha_type(token)
     return jsonify(res), status
 
+
+@app.route("/recipes/<string:dosha_type>")
+@require_api_key
+def api_get_recipe_by_dosha_type(dosha_type):
+    
+    if not dosha_type:
+        return jsonify({'error': 'Dosha type is required'}), 400
+    else:
+        try:
+            res, status = get_recipe_by_dosha_type(dosha_type)
+            return jsonify(res), status
+        except ValueError as e:
+            return jsonify({'error': str(e)}), 400
 
 
 if __name__ == '__main__':

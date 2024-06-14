@@ -1,4 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.mutable import MutableList
+
 
 import random
 import string
@@ -34,7 +36,7 @@ class Answers(db.Model):
     answer_id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     question = db.Column(db.String(50))
     alt_letter = db.Column(db.String(1))
-    alternative = db.Column(db.String(25))
+    alternative = db.Column(db.String(100))
 
     def to_dict(self):
         return {
@@ -48,9 +50,11 @@ class Answers(db.Model):
 class Recipe(db.Model):
     __tablename__ = 'recipes'
     recipe_id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(255))
-    prep_time = db.Column(db.String(25)) #TimeInterval 
-    total_time = db.Column(db.String(25)) #TimeInterval 
+    recipe_name = db.Column(db.String(255))
+    recipe_category = db.Column(db.String(150)) #-> String
+    recipe_rating = db.Column(db.Integer)#-> From 1-5
+    calories = db.Column(db.Float) #Kcal
+    fat_content =  db.Column(db.Float) # grams 
     saturated_fat_content = db.Column(db.Float) # grams 
     cholesterol_content =  db.Column(db.Float) # miligrams
     sodium_content = db.Column(db.Float) # miligrams 
@@ -59,30 +63,38 @@ class Recipe(db.Model):
     sugar_content = db.Column(db.Float) #grams 
     protein_content = db.Column(db.Float) #grams 
     recipe_servings = db.Column(db.Float)
-    calories = db.Column(db.Float) #Kcal
-    rating = db.Column(db.Integer)#-> From 1-5
-    recipe_category = db.Column(db.String(150)) #-> String
-    source = db.Column(db.String(20))
-    
+    recipe_ingredient = db.Column(MutableList.as_mutable(db.PickleType))
+    recipe_instructions = db.Column(MutableList.as_mutable(db.PickleType))
+    cooktime_min = db.Column(db.Float)
+    preptime_min = db.Column(db.Float)
+    totaltime_min = db.Column(db.Float)
+    vata_dosha_score = db.Column(db.Integer)
+    pitta_dosha_score = db.Column(db.Integer)
+    kapha_dosha_score = db.Column(db.Integer)
+
 
     def to_dict(self):
         return {
             'recipe_id': self.recipe_id,
-            'name': self.name,
-            'prep_time': self.prep_time,
-            'total_time': self.total_time,
+            'recipe_name': self.recipe_name,
+            'recipe_category': self.recipe_category,
+            'recipe_rating': self.recipe_rating,
+            'calories': self.calories,
+            'fat_content': self.fat_content,
             'saturated_fat_content': self.saturated_fat_content,
             'cholesterol_content': self.cholesterol_content,
-            'sodium_content':self.sodium_content,
+            'sodium_content': self.sodium_content,
             'carbohydrate_content': self.carbohydrate_content,
             'fiber_content': self.fiber_content,
             'sugar_content': self.sugar_content,
-            'protein_content':self.protein_content,
-            'recipe_servings':self.recipe_servings,
-            'calories':self.calories,
-            'rating' : self.rating,
-            'recipe_category':self.recipe_category,
-            'source': self.source
-        }    
-    
-    
+            'protein_content': self.protein_content,
+            'recipe_servings': self.recipe_servings,
+            'recipe_ingredient': self.recipe_ingredient,
+            'recipe_instructions': self.recipe_instructions,
+            'cooktime_min': self.cooktime_min,
+            'preptime_min': self.preptime_min,
+            'totaltime_min': self.totaltime_min,
+            'vata_dosha_score': self.vata_dosha_score,
+            'pitta_dosha_score': self.pitta_dosha_score,
+            'kapha_dosha_score': self.kapha_dosha_score
+        }
