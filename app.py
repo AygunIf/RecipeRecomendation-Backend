@@ -41,6 +41,19 @@ def api_get_recipe_by_id(id):
     res, status = get_recipe_by_id(id)
     return jsonify(res), status    
 
+@app.route("/recipes/<string:dosha_type>")
+@require_api_key
+def api_get_recipe_by_dosha_type(dosha_type):
+    
+    if not dosha_type:
+        return jsonify({'error': 'Dosha type is required'}), 400
+    else:
+        try:
+            res, status = get_recipe_by_dosha_type(dosha_type)
+            return jsonify(res), status
+        except ValueError as e:
+            return jsonify({'error': str(e)}), 400
+
 
 ######
 # User Connections
@@ -83,20 +96,6 @@ def api_save_user_answers(token):
 def api_calculate_dosha(token):
     res,status = calculate_user_dosha_type(token)
     return jsonify(res), status
-
-
-@app.route("/recipes/<string:dosha_type>")
-@require_api_key
-def api_get_recipe_by_dosha_type(dosha_type):
-    
-    if not dosha_type:
-        return jsonify({'error': 'Dosha type is required'}), 400
-    else:
-        try:
-            res, status = get_recipe_by_dosha_type(dosha_type)
-            return jsonify(res), status
-        except ValueError as e:
-            return jsonify({'error': str(e)}), 400
 
 
 if __name__ == '__main__':

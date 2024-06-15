@@ -34,7 +34,7 @@ class User(db.Model):
 class Answers(db.Model):
     __tablename__ = 'answers'
     answer_id = db.Column(db.Integer, primary_key = True, autoincrement=True)
-    question = db.Column(db.String(50))
+    question = db.Column(db.String(100))
     alt_letter = db.Column(db.String(1))
     alternative = db.Column(db.String(100))
 
