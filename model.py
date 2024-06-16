@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.ext.mutable import MutableList
-
+#from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy.dialects.postgresql import ARRAY
 
 import random
 import string
@@ -63,8 +63,8 @@ class Recipe(db.Model):
     sugar_content = db.Column(db.Float) #grams 
     protein_content = db.Column(db.Float) #grams 
     recipe_servings = db.Column(db.Float)
-    recipe_ingredient = db.Column(MutableList.as_mutable(db.PickleType))
-    recipe_instructions = db.Column(MutableList.as_mutable(db.PickleType))
+    recipe_ingredient = db.Column(ARRAY(db.Text))  # db.Column(MutableList.as_mutable(db.PickleType))
+    recipe_instructions = db.Column(ARRAY(db.Text)) # db.Column(MutableList.as_mutable(db.PickleType))
     cooktime_min = db.Column(db.Float)
     preptime_min = db.Column(db.Float)
     totaltime_min = db.Column(db.Float)

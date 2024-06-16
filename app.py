@@ -44,16 +44,8 @@ def api_get_recipe_by_id(id):
 @app.route("/recipes/<string:dosha_type>")
 @require_api_key
 def api_get_recipe_by_dosha_type(dosha_type):
-    
-    if not dosha_type:
-        return jsonify({'error': 'Dosha type is required'}), 400
-    else:
-        try:
-            res, status = get_recipe_by_dosha_type(dosha_type)
-            return jsonify(res), status
-        except ValueError as e:
-            return jsonify({'error': str(e)}), 400
-
+    res, status = get_recipe_by_dosha_type(dosha_type)
+    return jsonify(res), status
 
 ######
 # User Connections

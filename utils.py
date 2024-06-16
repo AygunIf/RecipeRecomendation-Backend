@@ -1,5 +1,7 @@
 from flask import request, jsonify
 from functools import wraps
+from flask import current_app as app  # Import app from Flask context
+
 
 
 def require_api_key(f):
@@ -18,26 +20,31 @@ def check_api_key(api_key):
     return api_key == FOOD_API_KEY
 
 
-def filter_recipes_by_dosha(df, dosha_type):
-    if dosha_type == 'vata':
-        filtered_df = df[(df['vata_dosha_score'] > 0) & 
-                         (df['vata_dosha_score'] > df['pitta_dosha_score']) & 
-                         (df['vata_dosha_score'] > df['kapha_dosha_score'])]
-        sorted_df = filtered_df.sort_values(by='vata_dosha_score', ascending=False)
-    elif dosha_type == 'pitta':
-        filtered_df = df[(df['pitta_dosha_score'] > 0) & 
-                         (df['pitta_dosha_score'] > df['vata_dosha_score']) & 
-                         (df['pitta_dosha_score'] > df['kapha_dosha_score'])]
-        sorted_df = filtered_df.sort_values(by='pitta_dosha_score', ascending=False)
-    elif dosha_type == 'kapha':
-        filtered_df = df[(df['kapha_dosha_score'] > 0) & 
-                         (df['kapha_dosha_score'] > df['vata_dosha_score']) & 
-                         (df['kapha_dosha_score'] > df['pitta_dosha_score'])]
-        sorted_df = filtered_df.sort_values(by='kapha_dosha_score', ascending=False)
-    else:
-        raise ValueError("Invalid dosha type. Choose from 'vata', 'pitta', or 'kapha'.")
+def filter_recipes_by_dosha(recipes_list, dosha_type):
+    filtered_recipes = []
+    app.logger.info('Processing request for dosha type: %s', dosha_type)
+
+    for recipe in recipes_list:
+        if dosha_type == 'vata':
+            if (recipe['vata_dosha_score'] > 0 and 
+                recipe['vata_dosha_score'] > recipe['pitta_dosha_score'] and
+                recipe['vata_dosha_score'] > recipe['kapha_dosha_score']):
+                filtered_recipes.append(recipe)
+        elif dosha_type == 'pitta':
+            if (recipe['pitta_dosha_score'] > 0 and 
+                recipe['pitta_dosha_score'] > recipe['vata_dosha_score'] and
+                recipe['pitta_dosha_score'] > recipe['kapha_dosha_score']):
+                filtered_recipes.append(recipe)
+        elif dosha_type == 'kapha':
+            if (recipe['kapha_dosha_score'] > 0 and 
+                recipe['kapha_dosha_score'] > recipe['vata_dosha_score'] and
+                recipe['kapha_dosha_score'] > recipe['pitta_dosha_score']):
+                filtered_recipes.append(recipe)
+        else:
+            raise ValueError("Invalid dosha type. Choose from 'vata', 'pitta', or 'kapha'.")
     
-    # Get top 20 recipes
-    top_20_recipes = sorted_df.head(20).to_dict(orient='records')
+    # Sort filtered recipes by respective dosha score and get top 20
+    sorted_recipes = sorted(filtered_recipes, key=lambda x: x[f"{dosha_type}_dosha_score"], reverse=True)
+    top_20_recipes = sorted_recipes[:20]
 
     return top_20_recipes
