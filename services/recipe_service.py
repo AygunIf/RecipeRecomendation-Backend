@@ -2,7 +2,10 @@ from model import Recipe, db
 from flask import jsonify
 from flask import current_app as app  # Import app from Flask context
 
-
+import joblib
+from sklearn.neighbors import NearestNeighbors
+import pandas as pd
+import numpy as np
 
 def get_all_recipes():
     all_recipes = Recipe.query.limit(20).all()
@@ -45,3 +48,29 @@ def get_recipe_by_dosha_type(dosha_type):
     recipes_list = [recipe.to_dict() for recipe in recipes]
 
     return recipes_list, 200
+
+def get_recommended_recipes(recipe_id):
+    
+    knn = joblib.load('data/knn_model.pkl')
+    y_np = np.load('data/train_label.npy', allow_pickle=True)
+
+    recipe = Recipe.query.filter_by(recipe_id=recipe_id).first()
+    #test recipe: 323
+
+    if recipe is None:
+        return {'message': 'Recipe not found.'}, 404
+
+    example_profile = pd.DataFrame(recipe.to_dict_knn())
+
+    y_val = example_profile.filter(['recipe_id','recipe_name'])
+    X_val = example_profile.drop(['recipe_id','recipe_name'], axis=1)
+
+    
+    X_val = X_val.values
+    y_val = y_val.values
+
+    distances, index = knn.kneighbors(X_val)
+    
+    recommended_recipes = [{'recipe_id' : y_np[i][0], 'recipe_name': y_np[i][1] } for i in index[0]]
+
+    return recommended_recipes, 200

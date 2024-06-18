@@ -98,3 +98,23 @@ class Recipe(db.Model):
             'pitta_dosha_score': self.pitta_dosha_score,
             'kapha_dosha_score': self.kapha_dosha_score
         }
+    
+    def to_dict_knn(self):
+        return {
+            'recipe_id': [self.recipe_id],
+            'recipe_name' : [self.recipe_name],
+            'calories': [self.calories],
+            'fat_content': [self.fat_content],
+            'saturated_fat_content': [self.saturated_fat_content],
+            'cholesterol_content': [self.cholesterol_content],
+            'fiber_content': [self.fiber_content],
+            'sugar_content': [self.sugar_content],
+            'carbohydrate_content': [self.carbohydrate_content],
+            'protein_content': [self.protein_content],
+            'cooktime_min': [self.cooktime_min],
+            'preptime_min': [self.preptime_min],
+            'totaltime_min': [self.totaltime_min],
+            'vata_dosha_score': [self.vata_dosha_score],
+            'pitta_dosha_score': [self.pitta_dosha_score],
+            'kapha_dosha_score' : [self.kapha_dosha_score]
+        }

@@ -47,6 +47,12 @@ def api_get_recipe_by_dosha_type(dosha_type):
     res, status = get_recipe_by_dosha_type(dosha_type)
     return jsonify(res), status
 
+@app.route("/recipes/knn/<int:id>")
+@require_api_key
+def api_get_reccomended_recipes_knn(id):
+    res, status = get_recommended_recipes(id)
+    return jsonify(res), status
+
 ######
 # User Connections
 ######
