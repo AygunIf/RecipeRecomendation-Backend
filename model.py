@@ -51,6 +51,7 @@ class Recipe(db.Model):
     __tablename__ = 'recipes'
     recipe_id = db.Column(db.Integer, primary_key = True)
     recipe_name = db.Column(db.String(255))
+    author_name = db.Column(db.String(50))
     recipe_category = db.Column(db.String(150)) #-> String
     recipe_rating = db.Column(db.Integer)#-> From 1-5
     calories = db.Column(db.Float) #Kcal
@@ -68,15 +69,18 @@ class Recipe(db.Model):
     cooktime_min = db.Column(db.Float)
     preptime_min = db.Column(db.Float)
     totaltime_min = db.Column(db.Float)
+    image_url = db.Column(db.String(length=1024))
     vata_dosha_score = db.Column(db.Integer)
     pitta_dosha_score = db.Column(db.Integer)
     kapha_dosha_score = db.Column(db.Integer)
-
+    score = db.Column(db.Float)
 
     def to_dict(self):
         return {
             'recipe_id': self.recipe_id,
             'recipe_name': self.recipe_name,
+            'author_name': self.author_name,
+            'image_url': self.image_url,
             'recipe_category': self.recipe_category,
             'recipe_rating': self.recipe_rating,
             'calories': self.calories,
@@ -96,13 +100,16 @@ class Recipe(db.Model):
             'totaltime_min': self.totaltime_min,
             'vata_dosha_score': self.vata_dosha_score,
             'pitta_dosha_score': self.pitta_dosha_score,
-            'kapha_dosha_score': self.kapha_dosha_score
+            'kapha_dosha_score': self.kapha_dosha_score,
+            'nutri_score': self.score
         }
     
     def to_dict_knn(self):
         return {
             'recipe_id': [self.recipe_id],
             'recipe_name' : [self.recipe_name],
+            'author_name' : [self.author_name],
+            'image_url': [self.image_url],
             'calories': [self.calories],
             'fat_content': [self.fat_content],
             'saturated_fat_content': [self.saturated_fat_content],
@@ -116,5 +123,6 @@ class Recipe(db.Model):
             'totaltime_min': [self.totaltime_min],
             'vata_dosha_score': [self.vata_dosha_score],
             'pitta_dosha_score': [self.pitta_dosha_score],
-            'kapha_dosha_score' : [self.kapha_dosha_score]
+            'kapha_dosha_score' : [self.kapha_dosha_score],
+            'nutri_score': [self.score]
         }
