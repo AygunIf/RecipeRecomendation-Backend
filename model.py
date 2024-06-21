@@ -80,7 +80,6 @@ class Recipe(db.Model):
             'recipe_id': self.recipe_id,
             'recipe_name': self.recipe_name,
             'author_name': self.author_name,
-            'image_url': self.image_url,
             'recipe_category': self.recipe_category,
             'recipe_rating': self.recipe_rating,
             'calories': self.calories,
@@ -98,18 +97,17 @@ class Recipe(db.Model):
             'cooktime_min': self.cooktime_min,
             'preptime_min': self.preptime_min,
             'totaltime_min': self.totaltime_min,
+            'image_url': self.image_url,
             'vata_dosha_score': self.vata_dosha_score,
             'pitta_dosha_score': self.pitta_dosha_score,
             'kapha_dosha_score': self.kapha_dosha_score,
-            'nutri_score': self.score
+            'score': self.score
         }
     
     def to_dict_knn(self):
         return {
             'recipe_id': [self.recipe_id],
             'recipe_name' : [self.recipe_name],
-            'author_name' : [self.author_name],
-            'image_url': [self.image_url],
             'calories': [self.calories],
             'fat_content': [self.fat_content],
             'saturated_fat_content': [self.saturated_fat_content],
@@ -124,5 +122,5 @@ class Recipe(db.Model):
             'vata_dosha_score': [self.vata_dosha_score],
             'pitta_dosha_score': [self.pitta_dosha_score],
             'kapha_dosha_score' : [self.kapha_dosha_score],
-            'nutri_score': [self.score]
+            'score': [self.score]
         }

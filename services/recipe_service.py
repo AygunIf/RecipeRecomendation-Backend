@@ -61,16 +61,20 @@ def get_recommended_recipes(recipe_id):
         return {'message': 'Recipe not found.'}, 404
 
     example_profile = pd.DataFrame(recipe.to_dict_knn())
-
+    print(example_profile.columns)
     y_val = example_profile.filter(['recipe_id','recipe_name'])
-    X_val = example_profile.drop(['recipe_id','recipe_name'], axis=1)
+    X_val = example_profile.drop(['recipe_id', 'recipe_name', 'score'], axis=1) # after training remove score from the list
+                                                                                #error: "message": "Error in KNN prediction: X has 15 features, but NearestNeighbors is expecting 14 features as input."
 
     
     X_val = X_val.values
     y_val = y_val.values
-
-    distances, index = knn.kneighbors(X_val)
     
+    try:
+        distances, index = knn.kneighbors(X_val)
+    except Exception as e:
+        return {'message': f'Error in KNN prediction: {str(e)}'}, 500
+
     recommended_recipes = [{'recipe_id' : y_np[i][0], 'recipe_name': y_np[i][1] } for i in index[0]]
 
     return recommended_recipes, 200
